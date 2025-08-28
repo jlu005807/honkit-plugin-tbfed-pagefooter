@@ -1,0 +1,42 @@
+{
+  "name": "honkit-plugin-tbfed-pagefooter",
+  "version": "0.0.1",
+  "description": "定制每篇文章的页脚，可以添加版权和显示文件修改时间",
+  "main": "index.js",
+  "author": {
+    "name": "ozy",
+    "email": "1289406660@qq.com"
+  },
+  "keywords": [
+    "gitbook",
+    "gitbook-plugin",
+    "honkit",
+    "honkit-plugin",
+    "footer",
+    "modification"
+  ],
+  "engines": {
+    "honkit": ">=6.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlu005807/honkit-plugin-tbfed-pagefooter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jlu005807/honkit-plugin-tbfed-pagefooter/issues"
+  },
+  "homepage": "https://github.com/jlu005807/honkit-plugin-tbfed-pagefooter#readme",
+  "license": "Apache-2.0",
+  "files": [
+    "index.js",
+    "assets/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "moment": "^2.10.6"
+  }
+}
