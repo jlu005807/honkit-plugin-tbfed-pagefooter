@@ -61,10 +61,35 @@ module.exports = {
         _modifyHtml = '<span class="footer-modification">' + _label + '\n{{file.mtime | date("' + _format + '")}}\n</span>';
       }
 
-  var footerClass = hoverEnable ? 'page-footer' : 'page-footer no-hover';
-  var str = ' \n\n<footer class="' + footerClass + '"' + footerStyleAttr + '>' + _copyHtml + _modifyHtml + '</footer>';
+      var footerClass = hoverEnable ? 'page-footer' : 'page-footer no-hover';
+      // 插入脚本：根据页面是否存在特定类组合来切换 --font-color 变量（支持动态主题切换）
+      var colorScript = ''
+        + '<script>(function(){'
+        + 'try{'
+        + '  var defaultColor = (function(){'
+        + '    try{ return getComputedStyle(document.documentElement).getPropertyValue("--font-color") || "#080000"; }catch(e){return "#080000";}'
+        + '  })();'
+        + '  function updateFontColor(){'
+        + '    try{'
+        + '      if(document.querySelector(".book.font-size-2.font-family-1.color-theme-1")){'
+        + '        document.documentElement.style.setProperty("--font-color","#000000ff");'
+        + '      }else if(document.querySelector(".book.font-size-2.font-family-1.color-theme-2")){'
+        + '        document.documentElement.style.setProperty("--font-color","#ffffffff");'
+        + '      }else{'
+        + '        document.documentElement.style.setProperty("--font-color", defaultColor);'
+        + '      }'
+        + '    }catch(e){}'
+        + '  }'
+        + '  document.addEventListener("DOMContentLoaded", updateFontColor);'
+        + '  updateFontColor();'
+        + '  var mo = new MutationObserver(updateFontColor);'
+        + '  mo.observe(document.documentElement, { attributes: true, childList: true, subtree: true });'
+        + '}catch(e){}'
+        + '})();</' + 'script>';
 
-  page.content = page.content + str;
+      var str = ' \n\n<footer class="' + footerClass + '"' + footerStyleAttr + '>' + _copyHtml + _modifyHtml + '</footer>' + colorScript;
+
+      page.content = page.content + str;
       return page;
     }
   },

@@ -1,10 +1,14 @@
+:root {
+ --font-color: #808080;
+}
+
 .page-footer {
   margin-top: 50px;
   border-top: 1px solid #ccc;
   padding: 12px 0;
   font-size: 0.85rem;
   /* 使用相对单位便于缩放 */
-  color: #808080;
+  color: var(--font-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,7 +19,7 @@
 }
 
 .page-footer a {
-  color: #080000;
+  color: var(--font-color);
   /* 去掉 !important */
   text-decoration: underline;
   transition: color 0.2s ease, transform 0.15s ease;
