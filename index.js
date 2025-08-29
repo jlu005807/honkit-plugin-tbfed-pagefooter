@@ -38,15 +38,31 @@ module.exports = {
         _copy = _powerText;
       }
 
-  // 通过在 footer 上添加 .no-hover 类来禁用悬停效果（更可维护）
-  var _copyHtml = '<span class="copyright">' + _copy + '</span>';
+      // 通过在 footer 上添加 .no-hover 类来禁用悬停效果（更可维护）
+      var _copyHtml = '<span class="copyright">' + _copy + '</span>';
+      // 支持通过配置调整字体大小（font_size 或 fontSize）
+      var footerStyleAttr = '';
+      if (cfg) {
+        var fs = cfg.font_size || cfg.fontSize;
+        if (fs !== undefined && fs !== null && fs !== '') {
+          if (typeof fs === 'number') {
+            footerStyleAttr = ' style="font-size:' + fs + 'px;"';
+          } else if (typeof fs === 'string') {
+            if (/^[\d.]+$/.test(fs)) {
+              footerStyleAttr = ' style="font-size:' + fs + 'px;"';
+            } else {
+              footerStyleAttr = ' style="font-size:' + fs + ';"';
+            }
+          }
+        }
+      }
       var _modifyHtml = '';
       if (showModifyTime) {
         _modifyHtml = '<span class="footer-modification">' + _label + '\n{{file.mtime | date("' + _format + '")}}\n</span>';
       }
 
   var footerClass = hoverEnable ? 'page-footer' : 'page-footer no-hover';
-  var str = ' \n\n<footer class="' + footerClass + '">' + _copyHtml + _modifyHtml + '</footer>';
+  var str = ' \n\n<footer class="' + footerClass + '"' + footerStyleAttr + '>' + _copyHtml + _modifyHtml + '</footer>';
 
   page.content = page.content + str;
       return page;

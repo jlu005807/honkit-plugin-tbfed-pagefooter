@@ -2,10 +2,11 @@
 
 简体中文说明：这是一个用于 Honkit（或 GitBook 风格站点）的插件，负责在每个页面底部添加统一的页面注脚（Footer），支持自定义版权信息、最后修改时间显示、是否展示 "Powered by Honkit" 字段以及悬停样式。
 
-也可以在npm官方查看[honkit-plugin-tbfed-pagefooter](https://www.npmjs.com/package/honkit-plugin-tbfed-pagefooter)
-
 基于[gitbook-plugin-tbfed-pagefooter](https://github.com/zhj3618/gitbook-plugin-tbfed-pagefooter)开发，更加个性化。
 可以根据自己的需求选择是否显示相关内容
+
+在npm官方查看此插件[honkit-plugin-tbfed-pagefooter](https://www.npmjs.com/package/honkit-plugin-tbfed-pagefooter)
+
 
 ## 安装
 
@@ -27,28 +28,7 @@ npm install --save-dev honkit-plugin-tbfed-pagefooter
 
 ## 插件配置
 
-在 Honkit 的配置对象中添加 `tbfed-pagefooter` 配置项，示例：
-
-```json
-"tbfed-pagefooter": {
-  "copyright":"&copy; Taobao FED Team",
-  "modify_label": "该文件修订时间：",
-  "modify_format": "YYYY-MM-DD HH:mm:ss",
-  "show_power": true,
-  "hover": true,
-  "show_modify_time": true
-}
-```
-
-字段说明（默认值基于当前实现）：
-
-- `copyright` (string): 要显示的版权信息，支持 HTML 片段，例如 `&copy;` 或带链接的 `<a>` 标签。
-- `modify_label` (string): 最后修改时间的标签前缀，例如 `最后修改：`。支持 HTML。默认：`"该文件修订时间："`。
-- `modify_format` (string): 时间格式，基于常见的 moment/日期格式，例如 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:mm:ss`。默认：`"YYYY-MM-DD HH:mm:ss"`。
-- `show_power` (boolean): 是否在注脚显示 `powered by Honkit`。默认：`true`。
-- `hover` (boolean): 是否开启悬停样式（hover）。默认：`true`。当设置为 `false` 时，插件会向页面注入一段覆盖样式以禁用 hover 效果。
-- `show_modify_time` (boolean): 是否显示最后修改时间。默认：`true`。
-
+在 Honkit 的配置对象中添加 `tbfed-pagefooter` 配置项：
 示例（完整的 `book.json` 部分）：
 
 ```json
@@ -57,6 +37,7 @@ npm install --save-dev honkit-plugin-tbfed-pagefooter
   "tbfed-pagefooter": {
     "copyright": "&copy; Taobao FED Team",
     "show_modify_time": true,
+    "font_size": "0.9rem",
     "modify_label": "该文件修订时间：",
     "modify_format": "YYYY-MM-DD HH:mm:ss",
     "show_power": true,
@@ -64,6 +45,17 @@ npm install --save-dev honkit-plugin-tbfed-pagefooter
   }
 }
 ```
+
+字段说明（默认值基于当前实现）：
+- `copyright` (string): 要显示的版权信息，支持 HTML 片段，例如 `&copy;` 或带链接的 `<a>` 标签
+- `modify_label` (string): 最后修改时间的标签前缀，例如 `最后修改：`。支持 HTML。默认：`"该文件修订时间："`。
+- `modify_format` (string): 时间格式，基于常见的 moment/日期格式，例如 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:mm:ss`。默认：`"YYYY-MM-DD HH:mm:ss"`。
+- `show_power` (boolean): 是否在注脚显示 `powered by Honkit`。默认：`true`。
+- `hover` (boolean): 是否开启悬停样式（hover）。默认：`true`。当设置为 `false` 时，插件会向页面注入一段覆盖样式以禁用 hover 效果。
+- `show_modify_time` (boolean): 是否显示最后修改时间。默认：`true`。
+- `font_size` / `fontSize` (string|number): 可选，调整注脚整体字体大小。支持数字（视为 px）或带单位的字符串（例如 `"0.9rem"`）。示例：`"font_size": "0.9rem"` 或 `"fontSize": 14`。
+
+
 
 ## 注意
 
