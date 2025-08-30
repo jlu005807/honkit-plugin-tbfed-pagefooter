@@ -1,6 +1,7 @@
 name: publish-both-registries
 
 on:
+  workflow_dispatch: {}
   push:
     tags:
       - 'v*.*.*'
