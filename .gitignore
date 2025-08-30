@@ -1,0 +1,14 @@
+# Node
+node_modules/
+
+# npm ignore file should not be committed to package
+.npmignore
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db

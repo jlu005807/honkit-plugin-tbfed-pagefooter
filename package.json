@@ -1,5 +1,5 @@
 {
-  "name": "@jlu005807/honkit-plugin-tbfed-pagefooter",
+  "name": "honkit-plugin-tbfed-pagefooter",
   "version": "0.0.6",
   "description": "定制每篇文章的页脚，可以添加版权和显示文件修改时间",
   "main": "index.js",
@@ -36,7 +36,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/",
+    "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
   "scripts": {
