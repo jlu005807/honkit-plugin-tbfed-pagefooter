@@ -59,14 +59,20 @@ npm install --save-dev honkit-plugin-tbfed-pagefooter
 
 ## 主题与动态字体颜色
 
-插件会在页面插入一段小脚本，用于根据当前页面主题（由 Honkit 默认主题生成的类名）动态切换注脚文字颜色。
+插件会在每个生成页面中注入一个短小的内联配置对象（`window.__tbfed_pagefooter_config`，仅包含数据）并加载外部逻辑脚本 `assets/footer-theme.js`，浏览器端脚本根据该配置动态切换注脚文字颜色。
 
 行为说明：
 
-- 客户端脚本会读取 `tbfed-pagefooter.theme_colors`（若配置）作为映射；若未配置则使用内置映射 `color-theme-1 -> #000000ff`、`color-theme-2 -> #ffffffff`。
-- 脚本会检测页面是否存在形如 `.book.font-size-2.font-family-1.<theme-class>` 的元素（Honkit 默认主题在页面根节点通常会有类似的类），并按映射把 CSS 变量 `--font-color` 设置为对应颜色。
-- 若没有匹配到任何主题类，脚本会把 `--font-color` 恢复为页面加载时的初始值（读取自 `:root` 或 `document.documentElement`）。
-- 脚本会在 `DOMContentLoaded` 时执行一次检测，并通过 `MutationObserver` 监听 DOM 变化以支持运行时切换主题（例如用户在页面内切换主题设置时自动更新颜色）。
+- 构建阶段插件优先从 Honkit 上下文读取 `tbfed-pagefooter` 配置；若未提供，会尝试回退读取项目根目录下的 `book.json`（或 `book.js`）以取得 `tbfed-pagefooter.theme_colors`。
+- 注入的内联配置会被客户端脚本读取；若页面没有提供配置，脚本会回退为内置默认映射（例如 `color-theme-1`/`color-theme-2`）。
+- 客户端逻辑会遍历 `theme_colors` 的所有 key（例如 `color-theme-1`、`color-theme-2`），并按顺序检测：
+  1. 根元素（`document.documentElement`）是否包含该类；
+  2. `.book` 元素本身是否包含该类；
+  3. `.book` 的子元素中是否存在该类。
+  如果任一命中，脚本会把 CSS 变量 `--font-color` 设置为对应颜色。
+- 如果全部 key 均未命中，脚本会把 `--font-color` 恢复为页面加载时的初始值（读取自 `:root` 或 `document.documentElement`）。
+- 脚本在 `DOMContentLoaded` 时执行一次初始化，并注册 `MutationObserver`：优先监听 `.book` 的 class 变化（低开销），同时也在 `document.documentElement` 上注册较宽泛的观察器以捕获 `.book` 被替换或更高层级的类切换，从而支持运行时主题切换。
+- 脚本支持调试输出：在 `book.json` 中把 `tbfed-pagefooter.debug` 设为 `true` 或在浏览器控制台执行 `localStorage.setItem('tbfed_pagefooter_debug','1')`，脚本会在控制台打印匹配过程与 mutation 事件，方便定位问题。
 
 示例（`book.json` 配置）：
 

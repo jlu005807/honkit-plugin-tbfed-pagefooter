@@ -54,14 +54,18 @@ Fields (defaults shown or described):
 
 ## Theme colors and dynamic font color
 
-The plugin injects a small client-side script that sets the CSS variable `--font-color` based on the current Honkit theme class on the page. Behavior:
+The plugin injects a small inline configuration object (`window.__tbfed_pagefooter_config`) into each page (data-only) and loads an external logic script `assets/footer-theme.js`. The client script reads the config and sets `--font-color` based on the active theme class. Behavior:
 
-- The script reads `tbfed-pagefooter.theme_colors` from your config if provided; otherwise it uses a built-in mapping:
-  - `color-theme-1` -> `#000000ff`
-  - `color-theme-2` -> `#ffffffff`
-- The script checks for element(s) matching `.book.font-size-2.font-family-1.<theme-class>` and sets `--font-color` to the mapped color when found.
-- If no mapping matches, the script restores the original `--font-color` value read at page load.
-- The script runs on `DOMContentLoaded` and uses a `MutationObserver` to react to runtime theme changes.
+- At build time the plugin prefers Honkit-provided plugin config; if absent it will try to read `book.json` (or `book.js`) from the project root to obtain `tbfed-pagefooter.theme_colors`.
+- The inline config is read by the client script; if no config is provided, the script falls back to a built-in mapping (e.g. `color-theme-1` / `color-theme-2`).
+- The client iterates all keys in `theme_colors` and checks, in order:
+  1. whether `document.documentElement` has the theme class;
+  2. whether the `.book` element has the theme class;
+  3. whether any descendant of `.book` has the theme class.
+  When a key matches, the script sets `--font-color` to the corresponding color value.
+- If none match, the script restores the `--font-color` value captured at page load.
+- The script runs once on `DOMContentLoaded` and registers `MutationObserver`s: it listens for `.book` class changes (low overhead), and also registers a broader observer on `document.documentElement` to catch `.book` replacements or higher-level class switches so runtime theme switching is supported.
+- Debugging: set `tbfed-pagefooter.debug` to `true` in `book.json` or run `localStorage.setItem('tbfed_pagefooter_debug','1')` in the console to enable console logs for matching and mutation events.
 
 Example `book.json`:
 
@@ -69,7 +73,7 @@ Example `book.json`:
 "tbfed-pagefooter": {
   "theme_colors": {
     "color-theme-1": "#000000ff",
-    "color-theme-2": "#ffffffff"
+    "color-theme-2": "#d9d9d9ff"
   }
 }
 ```
@@ -81,8 +85,8 @@ module.exports = {
   plugins: ['tbfed-pagefooter'],
   'tbfed-pagefooter': {
     theme_colors: {
-      'color-theme-1': '#080000',
-      'color-theme-2': '#2b2b2b'
+      'color-theme-1': '#000000ff',
+      'color-theme-2': '#d9d9d9ff'
     }
   }
 };
