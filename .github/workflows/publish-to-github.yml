@@ -1,0 +1,49 @@
+name: publish-to-github
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Configure npm to use GitHub Packages for the owner scope and set auth
+          npm config set @jlu005807:registry https://npm.pkg.github.com/
+          npm config set //npm.pkg.github.com/:_authToken ${NODE_AUTH_TOKEN}
+
+          # Debug: show package.json before modification
+          echo '--- package.json before ---'
+          cat package.json || true
+          node -e "console.log('name before:', require('./package.json').name)" || true
+
+          # Temporarily add the owner scope to package.json name so GitHub Packages accepts it.
+          # This modifies the file in the runner only and is NOT committed back to the repo.
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8')); if(!p.name.startsWith('@')) p.name='@jlu005807/'+p.name; fs.writeFileSync('package.json', JSON.stringify(p,null,2)); console.log('Temporary package name written:', p.name);"
+
+          # Debug: show package.json after modification
+          echo '--- package.json after ---'
+          cat package.json || true
+          node -e "console.log('name after:', require('./package.json').name)" || true
+
+          # Publish to GitHub Packages (public access)
+          npm publish --registry=https://npm.pkg.github.com/ --access public
+
